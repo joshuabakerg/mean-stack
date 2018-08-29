@@ -1,0 +1,17 @@
+<div class="container">
+  <h1>Book List</h1>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let server of servers">
+      <td>{{ server.name}}</td>
+      <td>Show Detail</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

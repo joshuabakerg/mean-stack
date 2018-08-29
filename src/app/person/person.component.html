@@ -1,0 +1,10 @@
+<ul>
+  <li *ngFor="let script of scripts" (click)="onScriptClick(script.name)">
+    {{script.name}}
+  </li>
+</ul>
+<div *ngIf="currentScript">
+  <pre>{{stringify(currentScript)}}</pre>
+  <pre>{{currentScript.contents}}</pre>
+</div>
+
