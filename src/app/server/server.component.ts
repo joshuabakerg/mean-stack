@@ -13,7 +13,7 @@ export class ServerComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.http.get('/services/server').subscribe(data => {
+    this.http.get('http://localhost:3000/services/server').subscribe(data => {
       this.servers = data;
     });
   }

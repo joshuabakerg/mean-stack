@@ -15,7 +15,7 @@ export class PersonComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/services/script').subscribe(data => {
+    this.http.get('http://localhost:3000/services/script').subscribe(data => {
       this.scripts = <any[]>data;
     });
 
