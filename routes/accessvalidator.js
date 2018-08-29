@@ -1,19 +1,35 @@
-let users = [
-  {login: "joshua", password: "joshua", roles: ["admin"]},
-  {login: "test", password: "password1", roles: ["user"]},
-  {login: "dummy", password: "password1", roles: ["user"]},
+let accessUrls = [
+  {url: "/services/server", allowedRoles: ["admin"]}
 ];
 
 
-module.exports = (req, res, next) => {
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-  const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
-  let auth = users.find((item)=>item.login == login);
-  if (!login || !password || !auth || login !== auth.login || password !== auth.password) {
-    res.set('WWW-Authenticate', 'Basic realm="401"'); // change this
-    res.status(401).send('Authentication required.'); // custom message
-    return
+let listIncludes = (list1, list2) => {
+  for (const element1 of list1) {
+    for (const element2 of list2) {
+      if (element1 === element2) {
+        return true;
+      }
+    }
   }
-  res.user = auth;
-  next()
+  return false;
+};
+
+module.exports = (req, res, next) => {
+  try {
+    let user = req.user;
+    let url = req.originalUrl;
+
+    let access = accessUrls.find((item) => item.url == url);
+
+    if (!access) {
+      next();
+    } else if (listIncludes(user.roles, access.allowedRoles)) {
+      next();
+    } else {
+      res.status(403).send(`User: ${user.login} not allowed to access ${url}. Requires one of [${access.allowedRoles}]`);
+    }
+    return;
+  } catch (e) {
+    console.log(e)
+  }
 };

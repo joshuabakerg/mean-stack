@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng build && node ./bin/www",
     "develop": "nodemon --watch src ng build && node ./bin/www",
+    "develop-nobuild": "node ./bin/www",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

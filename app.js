@@ -4,6 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var authentication = require('./routes/authentication');
+var accessValidator = require('./routes/accessvalidator');
 var services = require('./routes/services');
 
 /*mongoose.Promise = require('bluebird');
@@ -14,20 +16,9 @@ mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:2701
 
 var app = express();
 
-app.use((req, res, next) => {
-  const auth = {login: 'yourlogin', password: 'yourpassword'}; // change this
-
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-  const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
-
-  if (!login || !password || login !== auth.login || password !== auth.password) {
-    res.set('WWW-Authenticate', 'Basic realm="401"'); // change this
-    res.status(401).send('Authentication required.'); // custom message
-    return
-  }
-  next()
-});
-
+app.use(authentication);
+app.use(accessValidator);
+app.get("/", (req, res)=> res.redirect("/view"));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
