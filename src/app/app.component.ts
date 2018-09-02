@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -13,9 +14,12 @@ export class AppComponent {
     {name: 'Person', url: '/person'}
   ];
 
-  title = 'app';
+  user = 'app';
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient) {
+    http.get('/services/user').subscribe((data: any) => {
+      this.user = data;
+    });
   }
 
   pageClick(page) {
