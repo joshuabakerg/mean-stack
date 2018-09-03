@@ -18,7 +18,7 @@ export class AppComponent {
 
   constructor(private router: Router, private http: HttpClient) {
     http.get('/services/user').subscribe((data: any) => {
-      this.user = data;
+      this.user = data.user;
     });
   }
 

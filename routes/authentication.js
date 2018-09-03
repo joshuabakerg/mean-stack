@@ -17,7 +17,7 @@ let getAuth = (b64auth) => {
 };
 
 module.exports.user = (req, res) => {
-  res.send(req.user.login);
+  res.send({user: req.user.login});
 };
 
 module.exports.authentication = (req, res, next) => {
