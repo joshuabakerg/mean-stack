@@ -9,15 +9,10 @@ let requestAuthentication = (res) => {
   res.status(401).send('Authentication required.');
 };
 
-
 let getAuth = (b64auth) => {
   const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
   let auth = users.find((item) => item.login == login);
   return auth && auth.password === password ? auth : undefined;
-};
-
-module.exports.user = (req, res) => {
-  res.send({user: req.user.login});
 };
 
 module.exports.authentication = (req, res, next) => {

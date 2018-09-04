@@ -4,9 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var auth = require('./routes/authentication');
-var accessValidator = require('./routes/accessvalidator');
-var services = require('./routes/services');
+var auth = require('./bin/routes/authentication');
+var accessValidator = require('./bin/routes/accessvalidator');
+var services = require('./bin/routes/services');
 
 /*mongoose.Promise = require('bluebird');
 mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:27017/Devops", { useNewUrlParser: true , promiseLibrary: require('bluebird') })
@@ -19,7 +19,6 @@ var app = express();
 app.use(auth.authentication);
 app.use(accessValidator);
 app.get("/", (req, res)=> res.redirect("/view"));
-app.get("/services/user", auth.user);
 // app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));

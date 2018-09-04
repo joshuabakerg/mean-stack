@@ -14,7 +14,7 @@ export class AppComponent {
     {name: 'Person', url: '/person'}
   ];
 
-  user = 'app';
+  user = '';
 
   constructor(private router: Router, private http: HttpClient) {
     http.get('/services/user').subscribe((data: any) => {

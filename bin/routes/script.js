@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-let Script = require('../models/Script');
+let Script = require('../../models/Script');
 
 
 /* GET home page. */
