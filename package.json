@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build --prod && node ./bin/www",
+    "start": "node ./bin/www",
     "develop": "nodemon --watch src ng build && node ./bin/www",
-    "develop-nobuild": "node ./bin/www",
-    "build": "ng build",
+    "postinstall": "ng build --aot -prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
