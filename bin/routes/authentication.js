@@ -1,36 +1,44 @@
-let users = [
-  {login: "joshua", password: "joshua", roles: ["admin"]},
-  {login: "test", password: "password1", roles: ["user"]},
-  {login: "dummy", password: "password1", roles: ["user"]},
-];
+var admin = require("firebase-admin");
+
+let users = [];
+
+var db = admin.database();
+var userRef = db.ref("/user");
+
 
 let requestAuthentication = (res) => {
   res.set('WWW-Authenticate', 'Basic realm="401"'); // change this
   res.status(401).send('Authentication required.');
 };
 
-let getAuth = (b64auth) => {
+let getAuth = async (b64auth) => {
   const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
-  let auth = users.find((item) => item.login == login);
+  let auth = users.find((item) => item.login === login);
+  if(!auth){
+    let dbResults = (await userRef.orderByChild("login").equalTo(login).once("value")).val();
+    auth = Object.values(dbResults||{})[0];
+    if (auth) {
+      users.push(auth);
+    }
+  }
   return auth && auth.password === password ? auth : undefined;
 };
 
-module.exports.authentication = (req, res, next) => {
+module.exports.authentication = async (req, res, next) => {
   try {
     const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-    let auth = getAuth(b64auth);
+    let auth = await getAuth(b64auth);
 
     if (b64auth && req.originalUrl == "/logout") {
       console.log("loggin out");
       requestAuthentication(res);
-      return
+      return;
     }
     if (!auth) {
       console.log("requesting authentications");
       requestAuthentication(res);
-      return
+      return;
     }
-    console.log("authenticated user");
     req.user = auth;
     next()
   } catch (e) {
