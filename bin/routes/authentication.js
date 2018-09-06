@@ -5,6 +5,11 @@ let users = [];
 var db = admin.database();
 var userRef = db.ref("/user");
 
+userRef.on("child_changed", value => {
+  let userChange = value.val();
+  users.removeIf(user => user.login === userChange.login);
+  users.push(userChange);
+});
 
 let requestAuthentication = (res) => {
   res.set('WWW-Authenticate', 'Basic realm="401"'); // change this
