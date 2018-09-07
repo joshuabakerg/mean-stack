@@ -18,7 +18,9 @@ export class AppComponent {
   user = undefined;
 
   constructor(private router: Router, private http: HttpClient, auth: AuthService) {
-    this.user = auth.user;
+    http.get('/services/user').subscribe((data: any) => {
+      this.user = data;
+    });
   }
 
   pageClick(page) {

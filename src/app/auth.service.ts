@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
-
-import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {Observable, of} from 'rxjs';
 
 @Injectable()
 export class AuthService {
 
-  public user = null;
+  public user = undefined;
 
   constructor(private router: Router, private http: HttpClient) {
     console.log('Trying to get current login');
@@ -15,6 +14,11 @@ export class AuthService {
       this.user = data;
     });
   }
+
+  getAuthenticated(): Observable<any> {
+    return this.http.get('/services/user');
+  }
+
 
   login(): void {
     this.http.get('/services/user').subscribe((data: any) => {

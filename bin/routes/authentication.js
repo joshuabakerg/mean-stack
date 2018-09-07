@@ -55,13 +55,13 @@ module.exports.authentication = async (req, res, next) => {
     }
 
     let auth = await getAuth(req);
-
-    if (!auth && !req.originalUrl === "/services/user") {
+    if (!auth && req.originalUrl !== "/services/user") {
       console.log("requesting authentications");
       res.status(401).send('Authentication required.');
       return;
     }
-    assignUserToRequest(auth, req);
+    if(auth)
+      assignUserToRequest(auth, req);
     next();
   } catch (e) {
     console.log(e)
