@@ -4,6 +4,7 @@ let accessUrls = [
 
 
 let listIncludes = (list1, list2) => {
+  if(!list1 || !list2)return false;
   for (const element1 of list1) {
     for (const element2 of list2) {
       if (element1 === element2) {

@@ -1,18 +1,23 @@
+const request = require("request");
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./serviceAccountKey.json");
-
-/*admin.initializeApp({
+serviceAccount.private_key = process.env.FIRE_BASE_PRIVATE_KEY.replace(/\\n/g, '\n');
+admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://mean-angular.firebaseio.com"
 });
 
 var db = admin.database();
 var ref = db.ref("/user");
-ref.orderByChild("username").once("value")
+ref.orderByChild("login/username").equalTo("joshua").once("value")
   .then(value => {
-    value.forEach(a => console.log(a.val()));
-  });*/
+    console.log(JSON.stringify(value.val(), undefined, 2));
+  });
+
+
+
+/*
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -24,3 +29,4 @@ docRef.get()
   .then(serviceAccount => {
     console.log(serviceAccount.data());
   });
+*/

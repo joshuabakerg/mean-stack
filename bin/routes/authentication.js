@@ -1,5 +1,7 @@
 var admin = require("firebase-admin");
 
+let noLoginRequired = ["/services/user/register"];
+
 let users = [];
 
 var db = admin.database();
@@ -7,7 +9,7 @@ var userRef = db.ref("/user");
 
 userRef.on("child_changed", value => {
   let userChange = value.val();
-  users.removeIf(user => user.login === userChange.login);
+  users.removeIf(user => user.login.username === userChange.login.username);
   users.push(userChange);
 });
 
@@ -17,20 +19,31 @@ let requestAuthentication = (res) => {
 };
 
 let getAuth = async (b64auth) => {
-  const [login, password] = new Buffer(b64auth, 'base64').toString().split(':');
-  let auth = users.find((item) => item.login === login);
+  const [username, password] = new Buffer(b64auth, 'base64').toString().split(':');
+  let auth = users.find((item) => item.login.username === username);
   if(!auth){
-    let dbResults = (await userRef.orderByChild("login").equalTo(login).once("value")).val();
+    let dbResults = (await userRef.orderByChild("login/username").equalTo(username).once("value")).val();
     auth = Object.values(dbResults||{})[0];
     if (auth) {
       users.push(auth);
     }
   }
-  return auth && auth.password === password ? auth : undefined;
+  return auth && auth.login.password === password ? auth : undefined;
 };
+
+function assignUserToRequest(auth, req) {
+  let copiedUser = JSON.parse(JSON.stringify(auth));
+  copiedUser.login = {username: copiedUser.login.username};
+  req.user = copiedUser;
+}
 
 module.exports.authentication = async (req, res, next) => {
   try {
+    if(noLoginRequired.filter(value => value === req.originalUrl).length > 0){
+      next();
+      return
+    }
+
     const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
     let auth = await getAuth(b64auth);
 
@@ -44,7 +57,7 @@ module.exports.authentication = async (req, res, next) => {
       requestAuthentication(res);
       return;
     }
-    req.user = auth;
+    assignUserToRequest(auth, req);
     next()
   } catch (e) {
     console.log(e)

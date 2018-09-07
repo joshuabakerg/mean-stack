@@ -14,11 +14,11 @@ export class AppComponent {
     {name: 'Person', url: '/person'}
   ];
 
-  user = '';
+  user = undefined;
 
   constructor(private router: Router, private http: HttpClient) {
     http.get('/services/user').subscribe((data: any) => {
-      this.user = data.user;
+      this.user = data;
     });
   }
 

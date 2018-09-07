@@ -5,6 +5,7 @@
     "start": "node ./bin/www",
     "develop": "nodemon --exec \"ng build && npm start\"",
     "develop-backend": "nodemon --exec npm start",
+    "develop-frontend": "ng build --watch",
     "postinstall": "ng build --aot --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -33,6 +34,7 @@
     "firebase-admin": "^6.0.0",
     "mongoose": "^5.2.4",
     "morgan": "^1.9.0",
+    "request": "^2.88.0",
     "rxjs": "^6.0.0",
     "serve-favicon": "^2.5.0",
     "zone.js": "^0.8.26"
