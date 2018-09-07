@@ -1,7 +1,6 @@
 var admin = require("firebase-admin");
 
 let noLoginRequired = [
-  "/services/user",
   "/services/user/register",
   "/services/user/login"
 ];
