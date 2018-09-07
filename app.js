@@ -19,7 +19,7 @@ var app = express();
 
 app.use(cookieParser());
 app.use(auth.authentication);
-// app.use(accessValidator);
+app.use(accessValidator);
 app.get("/", (req, res)=> res.redirect("/view"));
 // app.use(logger('dev'));
 app.use(bodyParser.json());

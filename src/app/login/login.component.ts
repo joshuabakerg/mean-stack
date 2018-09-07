@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {AuthService} from '../auth.service';
+import {AuthGuard} from '../auth-guard.service';
 
 @Component({
   selector: 'app-login',
@@ -13,17 +13,15 @@ export class LoginComponent {
   public username: String;
   public password: String;
 
-  constructor(private router: Router, private http: HttpClient, private authService: AuthService) {
+  constructor(private router: Router, private http: HttpClient, private authService: AuthGuard) {
   }
 
   submit() {
     console.log({'username': this.username, 'password': this.password});
     this.http.post('/services/user/login', {'username': this.username, 'password': this.password}).subscribe((data: any) => {
       if (data.success) {
-        setTimeout(() => {
-          this.authService.user = data.user;
-          this.router.navigate(['/person']);
-        }, 200);
+        this.authService.setUser(data.user);
+        this.router.navigate(['/person']);
       }
     });
   }

@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
-import {AuthService} from './auth.service';
+import {AuthGuard} from './auth-guard.service';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +17,8 @@ export class AppComponent {
 
   user = undefined;
 
-  constructor(private router: Router, private http: HttpClient, auth: AuthService) {
-    http.get('/services/user').subscribe((data: any) => {
-      this.user = data;
-    });
+  constructor(private router: Router, private http: HttpClient, auth: AuthGuard) {
+    auth.getUser().subscribe(user => this.user = user);
   }
 
   pageClick(page) {
