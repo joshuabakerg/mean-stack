@@ -1,6 +1,10 @@
 var admin = require("firebase-admin");
 
-let noLoginRequired = ["/services/user/register"];
+let noLoginRequired = [
+  "/services/user",
+  "/services/user/register",
+  "/services/user/login"
+];
 
 let users = [];
 
@@ -18,17 +22,24 @@ let requestAuthentication = (res) => {
   res.status(401).send('Authentication required.');
 };
 
-let getAuth = async (b64auth) => {
-  const [username, password] = new Buffer(b64auth, 'base64').toString().split(':');
-  let auth = users.find((item) => item.login.username === username);
+let getAuth = async (req) => {
+  const sessionId = req.cookies.sessionid;
+  let auth = await getSessionIdAuth(sessionId);
+  return auth;
+};
+
+let getSessionIdAuth = async (sessionId) => {
+  if(!sessionId)return;
+  let auth = users.find((item) => item.login.sessionid === sessionId);
   if(!auth){
-    let dbResults = (await userRef.orderByChild("login/username").equalTo(username).once("value")).val();
+    let dbResults = (await userRef.orderByChild("login/sessionid").equalTo(sessionId).once("value")).val();
     auth = Object.values(dbResults||{})[0];
     if (auth) {
+      users.removeIf(user => user.login.username === auth.login.username);
       users.push(auth);
     }
   }
-  return auth && auth.login.password === password ? auth : undefined;
+  return auth;
 };
 
 function assignUserToRequest(auth, req) {
@@ -39,26 +50,20 @@ function assignUserToRequest(auth, req) {
 
 module.exports.authentication = async (req, res, next) => {
   try {
-    if(noLoginRequired.filter(value => value === req.originalUrl).length > 0){
+    if(noLoginRequired.filter(value => value === req.originalUrl).length > 0 || req.originalUrl.startsWith("/view")) {
       next();
-      return
-    }
-
-    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-    let auth = await getAuth(b64auth);
-
-    if (b64auth && req.originalUrl == "/logout") {
-      console.log("loggin out");
-      requestAuthentication(res);
       return;
     }
+
+    let auth = await getAuth(req);
+
     if (!auth) {
       console.log("requesting authentications");
-      requestAuthentication(res);
+      res.status(401).send('Authentication required.');
       return;
     }
     assignUserToRequest(auth, req);
-    next()
+    next();
   } catch (e) {
     console.log(e)
   }

@@ -1,16 +1,18 @@
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a *ngIf="user" class="navbar-brand">Welcome {{user.name.first}}</a>
+<div >
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a *ngIf="user" class="navbar-brand">Welcome {{user.name.first}}</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li *ngFor="let page of pages"><a (click)="pageClick(page)">{{page.name}}</a></li>
+      </ul>
+      <ul class="nav navbar-nav pull-right">
+        <li>
+          <img *ngIf="user" src="{{user.picture.thumbnail}}" class="img-thumbnail">
+        </li>
+      </ul>
     </div>
-    <ul class="nav navbar-nav">
-      <li *ngFor="let page of pages"><a (click)="pageClick(page)">{{page.name}}</a></li>
-    </ul>
-    <ul class="nav navbar-nav pull-right">
-      <li>
-        <img *ngIf="user" src="{{user.picture.thumbnail}}" class="img-thumbnail">
-      </li>
-    </ul>
-  </div>
-</nav>
+  </nav>
+</div>
 <router-outlet></router-outlet>

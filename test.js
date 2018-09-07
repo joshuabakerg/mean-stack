@@ -1,4 +1,5 @@
 const request = require("request");
+const {getChildren, getFirstKeyFromSnapshot} = require("./bin/utils/SnapUtils");
 var admin = require("firebase-admin");
 
 var serviceAccount = require("./serviceAccountKey.json");
@@ -12,7 +13,8 @@ var db = admin.database();
 var ref = db.ref("/user");
 ref.orderByChild("login/username").equalTo("joshua").once("value")
   .then(value => {
-    console.log(JSON.stringify(value.val(), undefined, 2));
+    let key = getFirstKeyFromSnapshot(value);
+    console.log(key)
   });
 
 

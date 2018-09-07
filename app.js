@@ -1,4 +1,5 @@
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -16,8 +17,9 @@ mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:2701
 
 var app = express();
 
+app.use(cookieParser());
 app.use(auth.authentication);
-app.use(accessValidator);
+// app.use(accessValidator);
 app.get("/", (req, res)=> res.redirect("/view"));
 // app.use(logger('dev'));
 app.use(bodyParser.json());

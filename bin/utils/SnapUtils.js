@@ -9,4 +9,9 @@ let getChildren = (snap) =>{
   return result;
 };
 
-module.exports = {getChildren};
+let getFirstKeyFromSnapshot = (snap) => {
+  let val = snap.val();
+  return Object.keys(val)[0];
+};
+
+module.exports = {getChildren, getFirstKeyFromSnapshot};
