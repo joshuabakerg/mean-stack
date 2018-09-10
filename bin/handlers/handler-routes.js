@@ -5,7 +5,7 @@ class Hander {
   constructor(io) {
     this.io = io;
     this.routes = [
-      {type : "new-message", call: newMessage}
+      {type : "create-new-message", call: newMessage}
     ];
   }
 

@@ -8,6 +8,10 @@ import {WebsocketService} from '../services/websocket.service';
 })
 export class ChatScreenComponent implements OnInit, OnDestroy {
 
+  newMessageText: String;
+
+  messages = [];
+
   private messageEventSubject;
   private websocketSubscription;
 
@@ -17,7 +21,10 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.messageEventSubject = this.websocketService.connect();
     this.websocketSubscription = this.messageEventSubject.subscribe(value => {
-      console.log(value);
+      console.log(value.data);
+      if (value.type === 'new-message') {
+        this.messages.push(value.data);
+      }
     });
   }
 
@@ -26,7 +33,11 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   }
 
   onClick() {
-    this.messageEventSubject.next({type: 'new-message', message: 'Hello'});
+    console.log(this.newMessageText);
+    if (this.newMessageText && this.newMessageText !== '') {
+      this.messageEventSubject.next({type: 'create-new-message', message: this.newMessageText});
+      this.newMessageText = '';
+    }
   }
 
 }

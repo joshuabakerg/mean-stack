@@ -1,4 +1,10 @@
-<p>
-  chat-screen works!
-</p>
-<button (click)="onClick()">Send message</button>
+<div *ngFor="let message of messages">
+  <div class="alert alert-success">
+    <img src="{{message.pic}}" class="img-circle" width="40" height="40">
+    <span class="badge badge-danger">{{message.from}}</span>{{message.message}}
+  </div>
+</div>
+<div class="input-group" style="position: fixed; bottom: 0">
+  <input [(ngModel)]="newMessageText" id="msg" type="text" class="form-control" name="msg" placeholder="Type new message" style="background-color:#b8c1d1;color:#000000">
+  <span (click)="onClick()" class="input-group-addon" style="cursor: pointer">Send</span>
+</div>

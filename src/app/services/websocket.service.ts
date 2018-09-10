@@ -3,6 +3,7 @@ import {Observable, Subject} from 'rxjs';
 import * as io from 'socket.io-client';
 import {CookieService} from 'ngx-cookie-service';
 import {cookieCompare} from 'tough-cookie';
+import {environment} from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,10 @@ export class WebsocketService {
   }
 
   connect(): Subject<MessageEvent> {
-    this.socket = io.connect('http://localhost:3000');
+    const hostname = window.location.hostname;
+    const connectionUrl = `http://${hostname}:${environment.socketPort}`;
+    console.log(connectionUrl);
+    this.socket = io.connect(connectionUrl);
     const observable = new Observable(obs => {
       this.socket.on('message', (data) => {
         console.log('Received a message from websocket server');
