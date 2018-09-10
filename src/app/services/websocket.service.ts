@@ -16,8 +16,7 @@ export class WebsocketService {
   }
 
   connect(): Subject<MessageEvent> {
-    const hostname = window.location.hostname;
-    const connectionUrl = `http://${hostname}:${environment.socketPort}`;
+    const connectionUrl = window.location.origin;
     console.log(connectionUrl);
     this.socket = io.connect(connectionUrl);
     const observable = new Observable(obs => {
