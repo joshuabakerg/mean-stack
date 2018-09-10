@@ -8,11 +8,14 @@ var serviceAccount = require("../serviceAccountKey.json");
 serviceAccount.private_key = process.env.FIRE_BASE_PRIVATE_KEY.replace(/\\n/g, '\n');
 admin.initializeApp({credential: admin.credential.cert(serviceAccount), databaseURL: "https://mean-angular.firebaseio.com"});
 
+let context = require("./context");
+let eventHandler = new (require("./handlers/handler-routes"));
+
 var app = require('../app');
 var debug = require('debug')('mean-app:server');
 
 var http = require('http');
-
+var sio = require('socket.io');
 /**
  * Get port from environment and store in Express.
  */
@@ -26,7 +29,7 @@ console.log(`Using port[${port}]`);
  */
 
 var server = http.createServer(app);
-
+var io = sio(server);
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -94,3 +97,14 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+io.on('connection', function(socket){
+  console.log('user connected');
+  socket.on('message', async function (data) {
+    let event = JSON.parse(data);
+    eventHandler.onMessage(socket, event);
+  });
+  socket.on('disconnect', function(){
+    eventHandler.onDisconnect();
+  });
+});

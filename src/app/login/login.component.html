@@ -12,6 +12,9 @@
           <label for="password">Password</label>
           <input type="password" class="form-control" name="password" id="password" placeholder="Password" [(ngModel)]="password">
         </div>
+        <div *ngIf="error" class="alert alert-danger">
+          {{error}}
+        </div>
         <div class="form-check">
           <button class="btn btn-info" type="button" name="showpassword" id="showpassword" value="Show Password">Show password</button>
           <button type="submit" class="btn btn-primary" (click)="submit()">Submit</button>

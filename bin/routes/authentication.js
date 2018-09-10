@@ -1,43 +1,13 @@
-var admin = require("firebase-admin");
+var {userService} = require("../context");
 
 let noLoginRequired = [
   "/services/user/register",
   "/services/user/login"
 ];
 
-let users = [];
-
-var db = admin.database();
-var userRef = db.ref("/user");
-
-userRef.on("child_changed", value => {
-  let userChange = value.val();
-  users.removeIf(user => user.login.username === userChange.login.username);
-  users.push(userChange);
-});
-
-let requestAuthentication = (res) => {
-  res.set('WWW-Authenticate', 'Basic realm="401"'); // change this
-  res.status(401).send('Authentication required.');
-};
-
 let getAuth = async (req) => {
   const sessionId = req.cookies.sessionid;
-  let auth = await getSessionIdAuth(sessionId);
-  return auth;
-};
-
-let getSessionIdAuth = async (sessionId) => {
-  if(!sessionId)return;
-  let auth = users.find((item) => item.login.sessionid === sessionId);
-  if(!auth){
-    let dbResults = (await userRef.orderByChild("login/sessionid").equalTo(sessionId).once("value")).val();
-    auth = Object.values(dbResults||{})[0];
-    if (auth) {
-      users.removeIf(user => user.login.username === auth.login.username);
-      users.push(auth);
-    }
-  }
+  let auth = await userService.getUserBySessionId(sessionId);
   return auth;
 };
 

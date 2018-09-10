@@ -1,15 +1,24 @@
 <div >
-  <nav class="navbar navbar-default">
+  <nav *ngIf="user" class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a *ngIf="user" class="navbar-brand">Welcome {{user.name.first}}</a>
+        <a class="navbar-brand">Welcome {{user.name.first}}</a>
       </div>
       <ul class="nav navbar-nav">
         <li *ngFor="let page of pages"><a (click)="pageClick(page)">{{page.name}}</a></li>
       </ul>
       <ul class="nav navbar-nav pull-right">
         <li>
-          <img *ngIf="user" src="{{user.picture.thumbnail}}" class="img-thumbnail">
+          <div class="dropdown" class="dropdown-menu-right" style="cursor: pointer">
+            <img src="{{user.picture.thumbnail}}" class="img-thumbnail" type="button" data-toggle="dropdown">
+            <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>-->
+            <ul class="dropdown-menu dropdown-menu-right">
+              <li><a href="#">{{user.email}}</a></li>
+              <li><a href="#">Account</a></li>
+              <li class="divider"></li>
+              <li><a (click)="logout()">Logout</a></li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
