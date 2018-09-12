@@ -1,40 +1,35 @@
-<div class="col-sm-2">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-2">
-        <img src="https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718__340.png" width="10" height="10">
-      </div>
-      <div class="col-md-10">
-        Joshua
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-sm-10">
-  <div class="row fill">
-    <div class="tab-pane">
-      <div *ngFor="let message of messages">
-        <div class="alert alert-success">
-          <img src="{{message.pic}}" class="img-circle" width="40" height="40">
-          <span class="badge badge-danger">{{message.from}}</span>{{message.message}}
+<div class="container">
+  <div class="row equal-height-grid">
+    <div class="col 19 s12">
+      <div class="card">
+        <div class="card-content">
+          <span class="card-title">Jane Doe</span>
+          <p>Currently Online</p>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div style="position: fixed; bottom: 0">
-      <div class="row">
-        <div class="col-12" style="padding-left: 2%; padding-right: 2%; padding-bottom: 1%">
-          <div class="input-group">
-            <input (keyup.enter)="onClick()" [(ngModel)]="newMessageText" id="msg" type="text" class="form-control"
-                   name="msg"
-                   placeholder="Type new message" style="background-color:#b8c1d1;color:#000000">
-            <span (click)="onClick()" class="input-group-addon" style="cursor: pointer">Send</span>
+
+        <div class="divider"></div>
+
+        <div class="card-content">
+          <div class="chat-wrapper">
+            <div *ngFor="let message of messages" class="chat-message {{getMessagePosition(message)}} {{canShowProfilePic(message)?'':'coalesce'}}">
+              <img *ngIf="canShowProfilePic(message)" class="circle" src="{{message.pic}}" alt="avatar">
+              {{message.message}}
+            </div>
           </div>
         </div>
+
+        <div class="chat-input">
+          <form action="">
+            <div class="chat-input-bar">
+              <textarea id="textarea1" name="textarea1" class="materialize-textarea" style="height: 72px;" (keyup.enter)="onClick()" [(ngModel)]="newMessageText"></textarea>
+              <button type="submit" (click)="onClick()">
+                <i class="material-icons">send</i>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
-
-

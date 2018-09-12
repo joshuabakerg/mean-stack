@@ -1,27 +1,29 @@
-<div >
-  <nav *ngIf="user" class="navbar navbar-expand-md navbar-light bg-light sticky-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand">Welcome {{user.name.first}}</a>
-      </div>
-      <ul class="nav navbar-nav">
-        <li *ngFor="let page of pages"><a (click)="pageClick(page)">{{page.name}}</a></li>
-      </ul>
-      <ul class="nav navbar-nav pull-right">
+<div class="navbar-fixed">
+  <nav class="light-blue">
+    <div class="nav-wrapper">
+      <a *ngIf="user" href="#!" class="brand-logo">Welocome {{user.name.first}}</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li *ngFor="let page of pages"><a [routerLink]="[page.url]">{{page.name}}</a></li>
         <li>
-          <div class="dropdown" class="dropdown-menu-right" style="cursor: pointer">
-            <img src="{{user.picture.thumbnail}}" class="img-thumbnail" type="button" data-toggle="dropdown" width="48" height="48">
-            <!--<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span class="caret"></span></button>-->
-            <ul class="dropdown-menu dropdown-menu-right">
-              <li><a href="#">{{user.email}}</a></li>
-              <li><a href="#">Account</a></li>
-              <li class="divider"></li>
-              <li><a (click)="logout()">Logout</a></li>
-            </ul>
+          <ul id="dropdown2" class="dropdown-content">
+            <li><a href="#!">one</a></li>
+            <li><a href="#!">two</a></li>
+            <li class="divider" tabindex="-1"></li>
+            <li><a href="#!" (click)="logout()">Logout</a></li>
+          </ul>
+          <div class="dropdown-trigger" data-target="dropdown2">
+            <img *ngIf="user" class="circle" src="{{user.picture.thumbnail}}" alt="avatar">
           </div>
         </li>
       </ul>
     </div>
   </nav>
 </div>
+
+<ul class="sidenav" id="mobile-demo">
+  <li *ngFor="let page of pages"><a [routerLink]="[page.url]">{{page.name}}</a></li>
+  <li class="divider"></li>
+  <li><a (click)="logout()">Logout</a></li>
+</ul>
 <router-outlet></router-outlet>

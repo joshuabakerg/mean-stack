@@ -3,6 +3,8 @@ import {Router} from '@angular/router';
 import {AuthGuard} from './auth-guard.service';
 import {Subscription} from 'rxjs';
 
+declare const M: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -35,6 +37,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    let elems = document.querySelectorAll('.dropdown-trigger');
+    console.log(elems);
+    M.Dropdown.init(elems, {coverTrigger: false});
+    elems = document.querySelectorAll('.sidenav');
+    M.Sidenav.init(elems);
     this.userSub = this.auth.getUserChanges().subscribe(user => this.user = user);
   }
 
