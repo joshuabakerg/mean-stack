@@ -23,7 +23,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.chatService.getAllMessages().subscribe(value => {
       this.messages = this.getParsedMessages(value);
-      console.log(this.messages);
+      this.scrollToBottomOfMessages();
     });
 
     this.messageEventSubject = this.websocketService.connect();
@@ -32,10 +32,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
         this.messages.push(value.data);
         this.messages = this.getParsedMessages(this.messages);
       }
-      setTimeout(() => {
-        const objDiv = document.getElementById('message_div');
-        objDiv.scrollTop = objDiv.scrollHeight;
-      }, 200);
+      this.scrollToBottomOfMessages();
     });
   }
 
@@ -49,6 +46,13 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       this.messageEventSubject.next({type: 'create-new-message', message: this.newMessageText});
       this.newMessageText = '';
     }
+  }
+
+  scrollToBottomOfMessages() {
+    setTimeout(() => {
+      const objDiv = document.getElementById('message_div');
+      objDiv.scrollTop = objDiv.scrollHeight;
+    }, 200);
   }
 
   fromMe(message): boolean {
