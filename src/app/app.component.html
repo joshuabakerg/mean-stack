@@ -1,7 +1,7 @@
 <div class="navbar-fixed">
   <nav class="light-blue">
     <div class="nav-wrapper">
-      <a *ngIf="user" href="#!" class="brand-logo">Welocome {{user.name.first}}</a>
+      <a *ngIf="user" href="#!" class="brand-logo">Welcome {{user.name.first}}</a>
       <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
         <li *ngFor="let page of pages"><a [routerLink]="[page.url]">{{page.name}}</a></li>
