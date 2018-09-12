@@ -24,7 +24,7 @@ app.get("/", (req, res)=> res.redirect("/view"));
 // app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({'extended':'false'}));
-app.use('/view/assets', express.static(path.join(__dirname, 'dist/assets')));
+app.use('/assets', express.static(path.join(__dirname, 'dist/assets')));
 app.use('/view', express.static(path.join(__dirname, 'dist')));
 app.use('/view/*', express.static(path.join(__dirname, 'dist')));
 app.use('/services', services);
