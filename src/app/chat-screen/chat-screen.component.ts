@@ -22,15 +22,20 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.chatService.getAllMessages().subscribe(value => {
-      this.messages = value;
+      this.messages = this.getParsedMessages(value);
+      console.log(this.messages);
     });
 
     this.messageEventSubject = this.websocketService.connect();
     this.websocketSubscription = this.messageEventSubject.subscribe(value => {
-      console.log(value.data);
       if (value.type === 'new-message') {
         this.messages.push(value.data);
+        this.messages = this.getParsedMessages(this.messages);
       }
+      setTimeout(() => {
+        const objDiv = document.getElementById('message_div');
+        objDiv.scrollTop = objDiv.scrollHeight;
+      }, 200);
     });
   }
 
@@ -55,18 +60,24 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
     return this.fromMe(message) ? 'right' : 'left';
   }
 
-  canShowProfilePic(currentMessage): boolean {
-    if (currentMessage === this.messages[0]) {
-      return true;
-    }
-    let lastMessage = this.messages[0];
-    for (const message of this.messages) {
-      if (message === currentMessage) {
-        break;
+  getParsedMessages(messages) {
+    const parsedMessages = [];
+    for (const message of messages) {
+      const lastMessage = parsedMessages[parsedMessages.length - 1];
+      if (lastMessage && lastMessage.from === message.from) {
+        parsedMessages.push(Object.assign({isConsecutive: true}, message));
+      } else {
+        parsedMessages.push(Object.assign({isConsecutive: false}, message));
       }
-      lastMessage = message;
     }
-    return !this.fromMe(lastMessage);
+    return parsedMessages;
+  }
+
+  getMessageColor(message) {
+    if (this.fromMe(message)) {
+      return this.authGuard.user.gender === 'male' ? 'blue' : 'pink';
+    }
+    return '';
   }
 
 }

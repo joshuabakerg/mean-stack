@@ -10,9 +10,9 @@
         <div class="divider"></div>
 
         <div class="card-content">
-          <div class="chat-wrapper">
-            <div *ngFor="let message of messages" class="chat-message {{getMessagePosition(message)}} {{canShowProfilePic(message)?'':'coalesce'}}">
-              <img *ngIf="canShowProfilePic(message)" class="circle" src="{{message.pic}}" alt="avatar">
+          <div id="message_div" class="chat-wrapper">
+            <div *ngFor="let message of messages" class="chat-message {{getMessageColor(message)}} {{getMessagePosition(message)}} {{!message.isConsecutive?'':'coalesce'}}">
+              <img *ngIf="!message.isConsecutive" class="circle" src="{{message.pic}}" alt="avatar">
               {{message.message}}
             </div>
           </div>
