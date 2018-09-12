@@ -1,0 +1,9 @@
+.tab-pane{
+  height:100%;
+  overflow-y:scroll;
+  width:100%;
+}
+.fill {
+  min-height: 100%;
+  height: 100%;
+}

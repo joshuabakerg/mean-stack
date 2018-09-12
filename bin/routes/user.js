@@ -34,7 +34,7 @@ router.post('/login', async function (req, res, next) {
     let sessionId = uuidv4();
     let key = getFirstKeyFromSnapshot(dbResult);
     userRef.child(`${key}/login/sessionid`).set(sessionId);
-    res.cookie('sessionid', sessionId, {maxAge: 900000});
+    res.cookie('sessionid', sessionId, {maxAge: 900000000000});
     res.send({success:true, message: "Successfully logged in", user: dbUser});
   } else {
     res.send({success:false, message: "Incorrect login details"});

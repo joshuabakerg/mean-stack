@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {WebsocketService} from '../services/websocket.service';
+import {ChatService} from '../services/chat.service';
 
 @Component({
   selector: 'app-chat-screen',
@@ -15,10 +16,14 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   private messageEventSubject;
   private websocketSubscription;
 
-  constructor(private websocketService: WebsocketService) {
+  constructor(private chatService: ChatService, private websocketService: WebsocketService) {
   }
 
   ngOnInit() {
+    this.chatService.getAllMessages().subscribe(value => {
+      this.messages = value;
+    });
+
     this.messageEventSubject = this.websocketService.connect();
     this.websocketSubscription = this.messageEventSubject.subscribe(value => {
       console.log(value.data);

@@ -1,10 +1,40 @@
-<div *ngFor="let message of messages">
-  <div class="alert alert-success">
-    <img src="{{message.pic}}" class="img-circle" width="40" height="40">
-    <span class="badge badge-danger">{{message.from}}</span>{{message.message}}
+<div class="col-sm-2">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <img src="https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718__340.png" width="10" height="10">
+      </div>
+      <div class="col-md-10">
+        Joshua
+      </div>
+    </div>
   </div>
 </div>
-<div class="input-group" style="position: fixed; bottom: 0">
-  <input [(ngModel)]="newMessageText" id="msg" type="text" class="form-control" name="msg" placeholder="Type new message" style="background-color:#b8c1d1;color:#000000">
-  <span (click)="onClick()" class="input-group-addon" style="cursor: pointer">Send</span>
+<div class="col-sm-10">
+  <div class="row fill">
+    <div class="tab-pane">
+      <div *ngFor="let message of messages">
+        <div class="alert alert-success">
+          <img src="{{message.pic}}" class="img-circle" width="40" height="40">
+          <span class="badge badge-danger">{{message.from}}</span>{{message.message}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div style="position: fixed; bottom: 0">
+      <div class="row">
+        <div class="col-12" style="padding-left: 2%; padding-right: 2%; padding-bottom: 1%">
+          <div class="input-group">
+            <input (keyup.enter)="onClick()" [(ngModel)]="newMessageText" id="msg" type="text" class="form-control"
+                   name="msg"
+                   placeholder="Type new message" style="background-color:#b8c1d1;color:#000000">
+            <span (click)="onClick()" class="input-group-addon" style="cursor: pointer">Send</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
