@@ -19,7 +19,7 @@ function assignUserToRequest(auth, req) {
 
 module.exports.authentication = async (req, res, next) => {
   try {
-    if(noLoginRequired.filter(value => value === req.originalUrl).length > 0 || req.originalUrl.startsWith("/view") || req.originalUrl.startsWith("/assets")) {
+    if(noLoginRequired.filter(value => value === req.originalUrl).length > 0 || req.originalUrl.startsWith("/view")) {
       next();
       return;
     }
