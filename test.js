@@ -10,13 +10,13 @@ admin.initializeApp({
 });
 
 var db = admin.database();
-var ref = db.ref("/user");
-ref.orderByChild("login/username").equalTo("joshua").once("value")
+// ref.orderByChild("login/username").equalTo("joshua").once("value")
+ref.once("value")
   .then(value => {
-    let key = getFirstKeyFromSnapshot(value);
-    console.log(key)
+    // console.log(value.val());
+    let key = getChildren(value)[0];
+    console.log(JSON.stringify(key, undefined, 2))
   });
-
 
 
 /*

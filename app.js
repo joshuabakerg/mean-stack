@@ -17,15 +17,20 @@ mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:2701
 
 var app = express();
 
+app.use(logger('dev'));
 app.use(cookieParser());
 app.use(auth.authentication);
 app.use(accessValidator);
-app.get("/", (req, res)=> res.redirect("/view"));
-// app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({'extended':'false'}));
 app.use('/view', express.static(path.join(__dirname, 'dist')));
-app.use('/view/*', express.static(path.join(__dirname, 'dist')));
+app.use('/view', (req, res, next)=>{
+  let fs = require("fs");
+  fs.readFile(path.join(__dirname, 'dist/index.html'), (err,data)=>{
+    res.type('html');
+    res.send(data);
+  });
+});
+// app.use('/view/*', express.static(path.join(__dirname, 'dist')));
+app.get("/", (req, res)=> res.redirect("/view"));
 app.use('/services', services);
 
 // catch 404 and forward to error handler

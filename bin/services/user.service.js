@@ -5,7 +5,7 @@ var userRef = db.ref("/user");
 
 class UserService {
 
-  constructor(){
+  constructor() {
     console.log("creating user service");
     this.users = [];
 
@@ -30,6 +30,10 @@ class UserService {
     }
     return auth;
   };
+
+  async register(newUser) {
+
+  }
 
 }
 
