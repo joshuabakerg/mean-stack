@@ -23,6 +23,7 @@ app.use(auth.authentication);
 app.use(accessValidator);
 app.use("/view", (req, res, next)=>{
   console.log(path.join(__dirname, 'dist'));
+  next();
 });
 app.use('/view', express.static(path.join(__dirname, 'dist')));
 app.use('/view', (req, res, next)=>{
