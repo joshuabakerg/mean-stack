@@ -51,4 +51,12 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  onSidebarClick(url){
+    const elem = document.querySelectorAll('.sidenav')[0];
+    console.log(elem);
+    const instance = M.Sidenav.getInstance(elem);
+    instance.close();
+    this.router.navigate([url]);
+  }
+
 }

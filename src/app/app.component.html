@@ -27,7 +27,7 @@
 </div>
 
 <ul class="sidenav" id="mobile-demo">
-  <li *ngFor="let page of pages"><a [routerLink]="[page.url]">{{page.name}}</a></li>
+  <li *ngFor="let page of pages"><a (click)="onSidebarClick(page.url)">{{page.name}}</a></li>
   <li class="divider"></li>
   <li><a (click)="logout()">Logout</a></li>
 </ul>
