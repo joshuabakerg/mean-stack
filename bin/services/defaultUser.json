@@ -1,0 +1,44 @@
+{
+  "cell": null,
+  "dob": {
+    "date": null
+  },
+  "email": null,
+  "gender": null,
+  "id": {
+    "name": null,
+    "value": null
+  },
+  "location": {
+    "city": null,
+    "coordinates": {
+      "latitude": null,
+      "longitude": null
+    },
+    "postcode": null,
+    "state": null,
+    "street": null,
+    "timezone": {
+      "description": null,
+      "offset": null
+    }
+  },
+  "login": {
+    "password": null,
+    "username": null
+  },
+  "name": {
+    "first": null,
+    "last": null,
+    "title": null
+  },
+  "picture": {
+    "large": "/view/assets/images/unknown.png",
+    "medium": "/view/assets/images/unknown.png",
+    "thumbnail": "/view/assets/images/unknown.png"
+  },
+  "registered": null,
+  "roles" : [
+    "user"
+  ]
+}

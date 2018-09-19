@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row">
+    <h2><strong>Register</strong></h2><br/>
+    <div *ngIf="error" class="alert alert-danger">
+      {{message}}
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <!-- Start form -->
+      <form>
+        <div *ngFor="let capture of captures" class="form-group">
+          <label for="{{capture.name}}">{{capture.display}}</label>
+          <input name="{{capture.name}}" type="{{capture.type}}" class="form-control"
+                 id="{{capture.name}}" aria-describedby="emailHelp" placeholder="{{capture.placeHolder}}"
+                 [(ngModel)]="capture.value" (ngModelChange)="onFormChange($event)" >
+        </div>
+        <div *ngIf="error" class="card red darken-1">
+          {{error}}
+        </div>
+        <div class="form-check">
+          <button class="waves-effect waves-light btn" type="button" (click)="showPassword()">Show password</button>
+          <button type="submit" class="waves-effect waves-light btn" (click)="submit()">Submit</button>
+        </div>
+        <a [routerLink]="['/login']">Log into an existing account</a>
+      </form>
+      <!-- End form -->
+    </div>
+  </div>
+</div>

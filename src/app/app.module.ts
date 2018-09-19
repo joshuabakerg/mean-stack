@@ -12,6 +12,8 @@ import { LoginComponent } from './login/login.component';
 import {LoginRoutingModule} from './login-routing.module';
 import {AppRoutingModule} from './app-routing.module';
 import { ChatScreenComponent } from './chat-screen/chat-screen.component';
+import { UserManagerComponent } from './user-manager/user-manager.component';
+import { RegisterComponent } from './register/register.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { ChatScreenComponent } from './chat-screen/chat-screen.component';
     PersonComponent,
     PageNotFoundComponent,
     LoginComponent,
-    ChatScreenComponent
+    ChatScreenComponent,
+    UserManagerComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,34 +1,25 @@
-const request = require("request");
 const {getChildren, getFirstKeyFromSnapshot} = require("./bin/utils/SnapUtils");
 var admin = require("firebase-admin");
+
+let authJson = Buffer.from(process.env.APP_AUTH, 'base64').toString('ascii');
+let auth = JSON.parse(authJson);
 
 var serviceAccount = require("./serviceAccountKey.json");
 serviceAccount.private_key = process.env.FIRE_BASE_PRIVATE_KEY.replace(/\\n/g, '\n');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(auth.serviceAccount),
   databaseURL: "https://mean-angular.firebaseio.com"
 });
 
 var db = admin.database();
 // ref.orderByChild("login/username").equalTo("joshua").once("value")
-ref.once("value")
+db.ref("/user").once("value")
   .then(value => {
     // console.log(value.val());
     let key = getChildren(value)[0];
-    console.log(JSON.stringify(key, undefined, 2))
+    let user = JSON.stringify(key);
+    console.log(user)
   });
 
 
-/*
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
 
-var db = admin.firestore();
-var docRef = db.collection('users').doc('alovelace');
-
-docRef.get()
-  .then(serviceAccount => {
-    console.log(serviceAccount.data());
-  });
-*/

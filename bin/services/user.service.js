@@ -1,18 +1,36 @@
 var admin = require("firebase-admin");
 
-var db = admin.database();
-var userRef = db.ref("/user");
+const {getChildren, getFirstKeyFromSnapshot} = require("../utils/SnapUtils");
+
+var defaultUser = require("./defaultUser.json");
 
 class UserService {
 
-  constructor() {
+  constructor(emailService) {
+    this.emailService = emailService;
+
+    let db = admin.database();
+    this.userRef = db.ref("/user");
+
     console.log("creating user service");
     this.users = [];
 
-    userRef.on("child_changed", value => {
+    this.userRef.on("child_changed", value => {
       let userChange = value.val();
       this.users.removeIf(user => user.login.username === userChange.login.username);
       this.users.push(userChange);
+    });
+    this.userRef.on("child_removed", value => {
+      let userChange = value.val();
+      this.users.removeIf(user => user.login.username === userChange.login.username);
+    });
+  }
+
+  async getAllUsers() {
+    let users = getChildren(await this.userRef.once("value"));
+    return users.map(user => {
+      // user.login = {username: user.login.username};
+      return user;
     });
   }
 
@@ -21,7 +39,7 @@ class UserService {
     if (!sessionId) return;
     let auth = this.users.find((item) => item.login.sessionid === sessionId);
     if (!auth) {
-      let dbResults = (await userRef.orderByChild("login/sessionid").equalTo(sessionId).once("value")).val();
+      let dbResults = (await this.userRef.orderByChild("login/sessionid").equalTo(sessionId).once("value")).val();
       auth = Object.values(dbResults || {})[0];
       if (auth) {
         this.users.removeIf(user => user.login.username === auth.login.username);
@@ -32,8 +50,52 @@ class UserService {
   };
 
   async register(newUser) {
-
+    let response = {created: false, message: ""};
+    if (!this.isUserValid(newUser)) {
+      response.message = "Required fields missing";
+    } else if (await this.userExists(newUser)) {
+      response.message = "User already exists";
+    } else {
+      let createdUser = Object.assign(defaultUser, newUser);
+      createdUser.registered = new Date().getTime();
+      console.log(JSON.stringify(createdUser, undefined, 2));
+      this.userRef.push(createdUser);
+      this.emailService.send(newUser.email, `Welcome ${newUser.name.first}`, "You have created a new account");
+      response.created = true;
+      response.message = "Created user";
+    }
+    return response;
   }
+
+  async deleteByUsername(username) {
+    let dbResult = await this.userRef.orderByChild("login/username").equalTo(username).once("value");
+    if(!dbResult.exists()){
+      throw new Error(`User with username:${username} does not exist`);
+    }
+    let key = getFirstKeyFromSnapshot(dbResult);
+    this.userRef.child(key).set(null);
+    return true;
+  }
+
+  isUserValid(newUser) {
+    return newUser &&
+
+      newUser.name &&
+      newUser.name.first &&
+
+      newUser.login &&
+      newUser.login.username &&
+      newUser.login.password &&
+
+      newUser.email;
+  }
+
+  async userExists(newUser) {
+    let users = getChildren(await this.userRef.once("value"));
+    return users.filter(user => user.login.username === newUser.login.username ||
+      user.email === newUser.email
+    ).length > 0;
+  };
 
 }
 

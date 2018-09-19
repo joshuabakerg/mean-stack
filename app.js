@@ -1,13 +1,11 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
-var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
 var auth = require('./bin/routes/authentication');
 var accessValidator = require('./bin/routes/accessvalidator');
 var services = require('./bin/routes/services');
+var views = require('./bin/routes/views');
 
 /*mongoose.Promise = require('bluebird');
 mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:27017/Devops", { useNewUrlParser: true , promiseLibrary: require('bluebird') })
@@ -21,19 +19,7 @@ app.use(logger('dev'));
 app.use(cookieParser());
 app.use(auth.authentication);
 app.use(accessValidator);
-app.use("/view", (req, res, next)=>{
-  console.log(path.join(__dirname, 'dist'));
-  next();
-});
-app.use('/view', express.static(path.join(__dirname, 'dist')));
-app.use('/view', (req, res, next)=>{
-  let fs = require("fs");
-  fs.readFile(path.join(__dirname, 'dist/index.html'), (err,data)=>{
-    res.type('html');
-    res.send(data);
-  });
-});
-// app.use('/view/*', express.static(path.join(__dirname, 'dist')));
+app.use("/view", views);
 app.get("/", (req, res)=> res.redirect("/view"));
 app.use('/services', services);
 

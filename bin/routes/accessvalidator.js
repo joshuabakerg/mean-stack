@@ -1,5 +1,6 @@
 let accessUrls = [
-  {url: "/services/server", allowedRoles: ["admin"]}
+  {url: "/services/server", allowedRoles: ["admin"]},
+  {url: "/services/user/all", allowedRoles: ["admin"]}
 ];
 
 
