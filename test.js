@@ -4,11 +4,10 @@ var admin = require("firebase-admin");
 let authJson = Buffer.from(process.env.APP_AUTH, 'base64').toString('ascii');
 let auth = JSON.parse(authJson);
 
-var serviceAccount = require("./serviceAccountKey.json");
-serviceAccount.private_key = process.env.FIRE_BASE_PRIVATE_KEY.replace(/\\n/g, '\n');
 admin.initializeApp({
   credential: admin.credential.cert(auth.serviceAccount),
-  databaseURL: "https://mean-angular.firebaseio.com"
+  databaseURL: "https://mean-angular.firebaseio.com",
+  storageBucket: "mean-angular.appspot.com"
 });
 
 var db = admin.database();
@@ -20,6 +19,15 @@ db.ref("/user").once("value")
     let user = JSON.stringify(key);
     console.log(user)
   });
+
+var bucket = admin.storage().bucket();
+
+bucket.upload('./src/assets/images/unknown.png').then(data => {
+  console.log('upload success');
+  console.log(data);
+}).catch(err => {
+  console.log('error uploading to storage', err);
+});
 
 
 
