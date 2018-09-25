@@ -1,6 +1,6 @@
 <div style="float:bottom; height: 10%;">
   <label for="uploadScript" class="btn btn-success">Upload</label>
-  <input type="file" (change)="onUpload($event)" id="uploadScript" style="display: none"/>
+  <input type="file" accept="image/*" (change)="onUpload($event)" id="uploadScript" style="display: none"/>
 </div>
 <ul>
   <li *ngFor="let script of scripts" (click)="onScriptClick(script.name)">
