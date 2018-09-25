@@ -77,6 +77,16 @@ class UserService {
     return true;
   }
 
+  async updateUserDisplayPicture(username, picutreLink) {
+    let dbResult = await this.userRef.orderByChild("login/username").equalTo(username).once("value");
+    if(!dbResult.exists()){
+      throw new Error(`User with username:${username} does not exist`);
+    }
+    let key = getFirstKeyFromSnapshot(dbResult);
+    await this.userRef.child(`${key}/picture/thumbnail`).set(picutreLink);
+    return true;
+  }
+
   isUserValid(newUser) {
     return newUser &&
 

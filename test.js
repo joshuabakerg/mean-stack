@@ -22,18 +22,18 @@ db.ref("/user").once("value")
 
 var bucket = admin.storage().bucket();
 
-let file = bucket.file("unknown.png");
+let file = bucket.file("joshua/profilePic");
 file.get().then(value => {
   let apiResponse = value[1];
   return "https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + apiResponse.metadata.firebaseStorageDownloadTokens
 }).then(console.log);
 
-bucket.upload('./src/assets/images/unknown.png', {destination : "joshua23/unknown.png"}).then(data => {
-  console.log('upload success');
-  console.log(data);
-}).catch(err => {
-  console.log('error uploading to storage', err);
-});
+// bucket.upload('./src/assets/images/unknown.png', {destination : "joshua23/unknown.png"}).then(data => {
+//   console.log('upload success');
+//   console.log(data);
+// }).catch(err => {
+//   console.log('error uploading to storage', err);
+// });
 
 
 

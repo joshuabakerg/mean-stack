@@ -24,6 +24,12 @@ export class AuthGuard implements CanActivate {
     this.userChange.next(user);
   }
 
+  updateUser() {
+    this.getUserOrigin().subscribe(value => {
+      this.setUser(value);
+    });
+  }
+
   getUserOrigin(): Observable<any> {
     return this.http.get('/services/user');
   }

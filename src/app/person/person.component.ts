@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {AuthGuard} from '../auth-guard.service';
 
 declare const M: any;
 
@@ -13,7 +14,7 @@ export class PersonComponent implements OnInit {
   scripts: any[];
   currentScript;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authGaurd: AuthGuard) {
   }
 
   ngOnInit() {
@@ -28,7 +29,7 @@ export class PersonComponent implements OnInit {
     const data = new FormData();
     data.append('pic', files[0], files[0].name);
     this.http.post('/services/upload/profilepic', data).subscribe((value: any) => {
-      console.log(value);
+      this.authGaurd.updateUser();
       M.toast({html: `Saved file tmp directory ${value.message}`});
     });
   }

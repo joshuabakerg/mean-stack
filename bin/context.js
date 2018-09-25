@@ -3,6 +3,7 @@ var admin = require("firebase-admin");
 let UserService = require("./services/user.service");
 let ChatService = require("./services/chat.service");
 let EmailService = require("./services/email.service");
+let UploadService = require("./services/upload.service");
 
 function getAuth() {
   let authJson = Buffer.from(process.env.APP_AUTH, 'base64').toString('ascii');
@@ -10,23 +11,22 @@ function getAuth() {
 }
 
 if (!global.context) {
-  global.context = {};
-
-  global.context.auth = getAuth();
+  let auth = getAuth();
 
   //Firebase
-  console.log(JSON.stringify(global.context.auth, undefined, 2));
-  admin.initializeApp(
-    {
-      credential: admin.credential.cert(global.context.auth.serviceAccount),
-      databaseURL: "https://mean-angular.firebaseio.com",
-      storageBucket: "mean-angular.appspot.com"
-    }
-  );
+  console.log(JSON.stringify(auth, undefined, 2));
+  admin.initializeApp({
+    credential: admin.credential.cert(auth.serviceAccount),
+    databaseURL: "https://mean-angular.firebaseio.com",
+    storageBucket: "mean-angular.appspot.com"
+  });
 
-  global.context.emailService = new EmailService('mail.joshuabakerg.co.za', 587, global.context.auth.emailAccount);
-  global.context.userService = new UserService(global.context.emailService);
-  global.context.chatService = new ChatService();
+  let emailService = new EmailService('mail.joshuabakerg.co.za', 587, auth.emailAccount);
+  let userService = new UserService(emailService);
+  let chatService = new ChatService();
+  let uploadService = new UploadService(userService);
+
+  global.context = {auth, emailService, userService, chatService, uploadService};
 }
 
 module.exports = global.context;
