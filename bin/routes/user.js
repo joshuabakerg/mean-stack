@@ -59,7 +59,7 @@ router.post('/register', async function (req, res, next) {
     let response = await userService.register(newUser);
     res.send(response);
   }catch (e) {
-    res.send({created: false, message: e});
+    res.status(500).send({created: false, message: e});
   }
 
 });
