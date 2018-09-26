@@ -4,6 +4,7 @@ let UserService = require("./services/user.service");
 let ChatService = require("./services/chat.service");
 let EmailService = require("./services/email.service");
 let UploadService = require("./services/upload.service");
+let ImageCompressionService = require("./services/imagecompress.service");
 
 function getAuth() {
   let authJson = Buffer.from(process.env.APP_AUTH, 'base64').toString('ascii');
@@ -24,7 +25,8 @@ if (!global.context) {
   let emailService = new EmailService('mail.joshuabakerg.co.za', 587, auth.emailAccount);
   let userService = new UserService(emailService);
   let chatService = new ChatService();
-  let uploadService = new UploadService(userService);
+  let imageCompressionService = new ImageCompressionService();
+  let uploadService = new UploadService(userService, imageCompressionService);
 
   global.context = {auth, emailService, userService, chatService, uploadService};
 }

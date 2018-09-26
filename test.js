@@ -35,5 +35,31 @@ file.get().then(value => {
 //   console.log('error uploading to storage', err);
 // });
 
+/*const imagemin = require('imagemin');
+const imageminJpegtran = require('imagemin-jpegtran');
+const imageminPngquant = require('imagemin-pngquant');
+
+(async () => {
+  const files = await imagemin(['src/assets/images/wallhaven.png'], 'dist/images', {
+    plugins: [
+      imageminJpegtran(),
+      imageminPngquant({quality: '5'})
+    ]
+  });
+
+  console.log(files);
+})();*/
+
+const path = require('path');
+const sharp = require('sharp');
+
+sharp('src/assets/images/wallhaven.png')
+  .resize(45, 45)
+  .toFile('output.png', (err, info) => {
+    console.log(err)
+    console.log(info)
+  });
+
+
 
 

@@ -15,7 +15,7 @@ mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:2701
 
 var app = express();
 
-app.use(logger('dev'));
+// app.use(logger('dev'));
 app.use(cookieParser());
 app.use(auth.authentication);
 app.use(accessValidator);

@@ -14,14 +14,18 @@ router.post('/:type', function (req, res, next) {
     let type = req.params.type;
     if (type === "profilepic") {
       let form = new formidable.IncomingForm();
-      form.parse(req, (err, fileds, files) => {
-        uploadService.uploadProfilePicture(req.user.login.username, files.pic.path, {
-          type: files.pic.type,
-          deleteAfter: true
-        })
-          .then((url) => {
+      form.parse(req, (err, fileds, {pic}) => {
+        let size = pic.size;
+        if (size < 10000000) {
+          uploadService.uploadProfilePicture(req.user.login.username, pic.path, {
+            type: pic.type,
+            deleteAfter: true
+          }).then((url) => {
             res.send({success: true, message: url});
           });
+        }else {
+          res.send({success: false, message: "File exceeds max size of 100000 bytes"});
+        }
       });
     } else {
       res.send({success: false, message: 'Please specify the type of upload'});

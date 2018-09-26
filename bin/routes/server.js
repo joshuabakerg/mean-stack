@@ -1,7 +1,5 @@
 var express = require('express');
 var router = express.Router();
-let Server = require('../../models/Server');
-
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
