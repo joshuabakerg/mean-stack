@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AuthGuard} from '../auth-guard.service';
+import {Subscription} from 'rxjs';
 
 declare const M: any;
 
@@ -9,19 +10,22 @@ declare const M: any;
   templateUrl: './person.component.html',
   styleUrls: ['./person.component.css']
 })
-export class PersonComponent implements OnInit {
+export class PersonComponent implements OnInit, OnDestroy {
 
-  scripts: any[];
-  currentScript;
+  user = undefined;
+  private userSub: Subscription;
 
   constructor(private http: HttpClient, private authGaurd: AuthGuard) {
   }
 
   ngOnInit() {
-    this.http.get('/services/script').subscribe(data => {
-      this.scripts = <any[]>data;
-    });
+    this.userSub = this.authGaurd.getUserChanges().subscribe(user => this.user = user);
+  }
 
+  ngOnDestroy() {
+    if (this.userSub) {
+      this.userSub.unsubscribe();
+    }
   }
 
   onUpload(event) {
@@ -29,13 +33,11 @@ export class PersonComponent implements OnInit {
     const data = new FormData();
     data.append('pic', files[0], files[0].name);
     this.http.post('/services/upload/profilepic', data).subscribe((value: any) => {
-      this.authGaurd.updateUser();
+      setTimeout(() => {
+        this.authGaurd.updateUser();
+      }, 500);
       M.toast({html: `Saved file tmp directory ${value.message}`});
     });
-  }
-
-  onScriptClick(scriptname: string) {
-    this.currentScript = this.scripts.find((script) => script.name === scriptname);
   }
 
   stringify(obj) {
