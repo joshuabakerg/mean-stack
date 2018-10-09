@@ -1,5 +1,6 @@
 var admin = require("firebase-admin");
 
+let SocketSessionService = require("./services/socketsession.service");
 let UserService = require("./services/user.service");
 let ChatService = require("./services/chat.service");
 let EmailService = require("./services/email.service");
@@ -22,13 +23,14 @@ if (!global.context) {
     storageBucket: "mean-angular.appspot.com"
   });
 
+  let socketSessionService = new SocketSessionService();
   let emailService = new EmailService('mail.joshuabakerg.co.za', 587, auth.emailAccount);
   let userService = new UserService(emailService);
-  let chatService = new ChatService();
+  let chatService = new ChatService(userService, socketSessionService);
   let imageCompressionService = new ImageCompressionService();
   let uploadService = new UploadService(userService, imageCompressionService);
 
-  global.context = {auth, emailService, userService, chatService, uploadService};
+  global.context = {auth, socketSessionService, emailService, userService, chatService, uploadService};
 }
 
 module.exports = global.context;

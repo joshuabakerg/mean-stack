@@ -1,0 +1,10 @@
+<ul class="collection">
+  <li (click)="onChatClick(chatItem)" *ngFor="let chatItem of chatItems" class="collection-item avatar">
+    <img [src]="getChatDetails(chatItem).image" alt="" class="circle">
+    <span class="title">{{getChatDetails(chatItem).name}}</span>
+    <p><small>@{{chatItem.mainUser}}</small>
+      <br>
+      <small>{{getChatDetails(chatItem).status}}</small>
+    </p>
+  </li>
+</ul>

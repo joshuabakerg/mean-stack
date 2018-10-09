@@ -14,4 +14,13 @@ export class ChatService {
     return this.http.get('/services/chat');
   }
 
+  getMessages(messageId): Observable<any> {
+    return this.http.get('/services/chat/messages/' + messageId);
+  }
+
+  addNewConversation(users): Observable<any> {
+    console.log('here');
+    return this.http.post('/services/chat/conversation', {users, includeRequester: true});
+  }
+
 }

@@ -11,55 +11,95 @@ admin.initializeApp({
 });
 
 var db = admin.database();
+
+function getUsers() {
 // ref.orderByChild("login/username").equalTo("joshua").once("value")
-db.ref("/user").once("value")
-  .then(value => {
-    // console.log(value.val());
-    let key = getChildren(value)[0];
-    let user = JSON.stringify(key);
-    console.log(user)
+  db.ref("/user").once("value")
+    .then(value => {
+      // console.log(value.val());
+      let key = getChildren(value)[0];
+      let user = JSON.stringify(key);
+      console.log(user)
+    });
+}
+
+function addBasicChat() {
+  db.ref("/chat").set({
+    convs: {
+      "conv1": {
+        users: ["joshua", "jess"],
+        messages: "mess1"
+      },
+      "conv2": {
+        users: ["joshua", "test"],
+        messages: "mess2"
+      }
+    },
+    messages: {
+      "mess1": [{from: "joshua", content: "hello", time: new Date().getTime()}],
+      "mess2": [{from: "jess", content: "hello", time: new Date().getTime()}]
+    },
+    details: {
+      "joshua": {
+        convIds: ["conv1", "conv2"],
+        status: "Hello this is my status",
+        available: "offline"
+      },
+      "jess": {
+        convIds: ["conv1"],
+        status: "Hello this Jess",
+        available: "offline"
+      },
+      "test": {
+        convIds: ["conv2"],
+        status: "Hello this test",
+        available: "offline"
+      }
+    }
+  }).then((res) => {
+    console.log(res)
   });
+}
 
-var bucket = admin.storage().bucket();
+// addBasicChat();
 
-let file = bucket.file("joshua/profilePic");
-file.get().then(value => {
-  let apiResponse = value[1];
-  return "https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + apiResponse.metadata.firebaseStorageDownloadTokens
-}).then(console.log);
+// db.ref("/chat/messages/mess1").push({content: "adsasdas", from: "joshua", time: 34534534543})
 
-// bucket.upload('./src/assets/images/unknown.png', {destination : "joshua23/unknown.png"}).then(data => {
-//   console.log('upload success');
-//   console.log(data);
-// }).catch(err => {
-//   console.log('error uploading to storage', err);
-// });
+function getChat() {
+  let start = new Date().getTime();
+  db.ref('/chat/link/joshua').once("value")
+    .then((res) => {
+      console.log(new Date().getTime() - start)
+      return res.val().conv
+    })
+    .then((id) => db.ref(`/chat/convs/${id}`).once("value"))
+    .then((res) => {
+      console.log(res.val());
+      console.log(new Date().getTime() - start)
+    })
+}
 
-/*const imagemin = require('imagemin');
-const imageminJpegtran = require('imagemin-jpegtran');
-const imageminPngquant = require('imagemin-pngquant');
+// getChat();
 
-(async () => {
-  const files = await imagemin(['src/assets/images/wallhaven.png'], 'dist/images', {
-    plugins: [
-      imageminJpegtran(),
-      imageminPngquant({quality: '5'})
-    ]
-  });
-
-  console.log(files);
-})();*/
-
-const path = require('path');
-const sharp = require('sharp');
-
-sharp('src/assets/images/wallhaven.png')
-  .resize(45, 45)
-  .toFile('output.png', (err, info) => {
-    console.log(err)
-    console.log(info)
-  });
+function getPicUrl() {
+  var bucket = admin.storage().bucket();
+  let file = bucket.file("joshua/profilePic");
+  file.get().then(value => {
+    let apiResponse = value[1];
+    return "https://firebasestorage.googleapis.com/v0/b/" + bucket.name + "/o/" + encodeURIComponent(file.name) + "?alt=media&token=" + apiResponse.metadata.firebaseStorageDownloadTokens
+  }).then(console.log);
+}
 
 
+let sad = {
+  asd: "adsad",
+  gfdvg: "sdafsdf",
+  lkxjvgkjdf: "bccxvg",
+  lksjdfkl: "klshdf"
+};
 
+sad.map((item)=>{
+  console.log(item);
+  return item;
+});
 

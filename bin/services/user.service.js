@@ -29,9 +29,21 @@ class UserService {
   async getAllUsers() {
     let users = getChildren(await this.userRef.once("value"));
     return users.map(user => {
-      // user.login = {username: user.login.username};
+      user.login = {username: user.login.username};
       return user;
     });
+  }
+
+  async getUserByUsername(userName) {
+    let user = this.users.find(user => user.login.username === userName);
+    if(!user){
+      user = getChildren(await this.userRef.orderByChild("login/username")
+        .equalTo(userName)
+        .once("value")
+      )[0];
+    }
+    //todo password from user object
+    return user;
   }
 
   async getUserBySessionId(sessionId) {

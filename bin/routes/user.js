@@ -21,6 +21,16 @@ router.get('/all', async (req, res, next) => {
   }
 });
 
+router.get('/usernames', async (req, res, next) => {
+  try{
+    let allUsers = await userService.getAllUsers();
+    let usernames = allUsers.map(user => user.login.username);
+    res.send(usernames);
+  }catch (e) {
+    res.send({status: "failed", message: e})
+  }
+});
+
 router.get('/logout', async function (req, res, next) {
   try {
     let dbResult = await userRef.orderByChild("login/sessionid")

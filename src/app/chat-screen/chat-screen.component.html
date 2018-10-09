@@ -1,35 +1,50 @@
-<div class="container">
-  <div class="row equal-height-grid">
-    <div class="col 19 s12">
-      <div class="card">
-        <div class="card-content">
-          <span class="card-title">Jane Doe</span>
-          <p>Currently Online</p>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="card-content">
-          <div id="message_div" class="chat-wrapper">
-            <div *ngFor="let message of messages" class="chat-message {{getMessageColor(message)}} {{getMessagePosition(message)}} {{!message.isConsecutive?'':'coalesce'}}">
-              <img *ngIf="!message.isConsecutive" class="circle" src="{{message.pic}}" alt="avatar">
-              {{message.message}}
-            </div>
+<div class="row">
+  <div class="col m2 s4">
+    <ul>
+      <li class="center-align">
+        <a (click)="onAddChatClick()" class="waves-effect waves-light btn modal-trigger" href="#modal1"><i class="material-icons">add_circle_outline</i>Add chat</a>
+      </li>
+    </ul>
+    <app-chat-list (selectedChat)="onChatChanged($event)"></app-chat-list>
+  </div>
+  <div class="col m10 s8">
+    <div *ngIf="selectedChat" class="card">
+      <div class="card-content">
+        <img class="circle right" [src]="getChatDetails(selectedChat).image" width="80" height="80"/>
+        <span class="card-title">{{getChatDetails(selectedChat).name}}</span>
+        <p>Currently {{getChatDetails(selectedChat).available}}</p>
+      </div>
+      <div class="divider"></div>
+      <div class="card-content">
+        <div id="message_div" class="chat-wrapper">
+          <div *ngFor="let message of messages"
+               class="chat-message {{getMessageColor(message)}} {{getMessagePosition(message)}} {{!message.isConsecutive?'':'coalesce'}}">
+            <img *ngIf="!message.isConsecutive" class="circle" src="{{message.pic}}" alt="avatar">
+            {{message.content}}
           </div>
-        </div>
-
-        <div class="chat-input">
-          <form action="">
-            <div class="chat-input-bar">
-              <textarea id="textarea1" name="textarea1" class="materialize-textarea" style="height: 72px;" (keyup.enter)="onClick()" [(ngModel)]="newMessageText"></textarea>
-              <button type="submit" (click)="onClick()">
-                <i class="material-icons">send</i>
-              </button>
-            </div>
-          </form>
         </div>
       </div>
 
+      <div class="chat-input">
+        <form action="">
+          <div class="chat-input-bar">
+              <textarea id="textarea1" name="textarea1" class="materialize-textarea" style="height: 72px;"
+                        (keyup.enter)="onClick()" [(ngModel)]="newMessageText"></textarea>
+            <button type="submit" (click)="onClick()">
+              <i class="material-icons">send</i>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
+</div>
+<!-- Modal Structure -->
+<div id="modal1" class="modal bottom-sheet">
+  <div class="modal-content">
+    <h4>Select users for new chat</h4>
+    <ul class="collection with-header">
+      <li class="collection-item" *ngFor="let user of users"><div>{{user}}<a (click)="onNewChatClick(user)" class="secondary-content"><i class="material-icons">send</i></a></div></li>
+    </ul>
   </div>
 </div>
