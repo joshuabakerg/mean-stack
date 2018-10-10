@@ -1,12 +1,13 @@
 let context = require("../context");
 let {joinChat, exitChat, newMessage} = require("./message.handler");
-let {registerSession} = require("./session.handler");
+let {registerSession, unregisterSession} = require("./session.handler");
 
 class Hander {
   constructor(io) {
     this.io = io;
     this.routes = [
       {type : "register-session", call: registerSession},
+      {type : "unregister-session", call: unregisterSession},
       {type : "join-chat", call: joinChat},
       {type : "exit-chat", call: exitChat},
       {type : "create-new-message", call: newMessage}

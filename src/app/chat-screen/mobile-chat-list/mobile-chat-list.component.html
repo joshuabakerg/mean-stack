@@ -1,0 +1,19 @@
+<div class="container">
+
+  <div id="showChatButton" class="center">
+    <a (click)="onShowChatsClick()" class="waves-effect waves-teal btn-flat "><i class="material-icons">dehaze</i></a>
+  </div>
+
+  <div id="chats" *ngIf="showChats">
+    <div class="chip" (click)="onNewChatClick()">
+      <img src="assets/images/add_circle_outline.png" alt="Contact Person">
+      new
+    </div>
+    <div *ngFor="let chatItem of chatItems" class="chip" (click)="onChatClick(chatItem)">
+      <img [src]="getChatDetails(chatItem).image" alt="Contact Person">
+      {{getChatDetails(chatItem).name}}
+    </div>
+  </div>
+
+</div>
+

@@ -17,7 +17,6 @@ class ChatService {
     this.chatRef = db.ref("/chat");
     this.chatRef.child("details").on("value", value => {
       let data = value.val();
-      console.log(data);
       this.chatDetails = data;
     })
   }
@@ -27,18 +26,38 @@ class ChatService {
       user = await this.userService.getUserByUsername(user);
     }
     let requesterChatDetails = await this.getChatDetails(user.login.username);
-    let conversationsPromises = Object.values(requesterChatDetails.convIds).map((id) => this.getConversation(id));
-    let requesterConversations = await Promise.all(conversationsPromises);
+    let convIds = Object.values(requesterChatDetails.convIds);
+    let conversationResults = await Promise.all(
+      convIds.map((id) => this.getConversation(id)
+        .then(conv => {
+          return {conv, id}
+        }))
+    );
     let users = new Set();
-    for (const conversation of requesterConversations) {
-      conversation.mainUser = conversation.users.find((userName) => userName !== user.login.username);
-      conversation.userDetails = {};
-      for (const userItem of conversation.users) {
-        users.add(userItem);
-        conversation.userDetails[userItem] = await this.getChatDetails(userItem);
+    for (let convRes of conversationResults) {
+      let conversation = convRes.conv;
+      if (conversation) {
+        conversation.mainUser = conversation.users.find((userName) => userName !== user.login.username);
+        conversation.userDetails = {};
+        for (const userItem of conversation.users) {
+          users.add(userItem);
+          conversation.userDetails[userItem] = await this.getChatDetails(userItem);
+        }
+      } else {
+        //Remove without waiting
+        this.removeConvIdFromConversationDetail(user.login.username, convRes.id).then((res)=>{});
       }
     }
-    return requesterConversations;
+    let returnConversations = conversationResults
+      .filter(convRes => convRes.conv)
+      .map(convRes => convRes.conv);
+    return returnConversations;
+  }
+
+  async removeConvIdFromConversationDetail(username, convId) {
+    let snap = await this.chatRef.child(`details/${username}/convIds`).orderByValue().equalTo(convId).once("value");
+    let key = getFirstKeyFromSnapshot(snap);
+    return this.chatRef.child(`details/${username}/convIds/${key}`).set({});
   }
 
   async getConversationById(id) {
@@ -68,16 +87,16 @@ class ChatService {
     let user = await this.userService.getUserByUsername(message.from);
     message.pic = user.picture.thumbnail;
     let toSend = {type: "new-message", data: message};
-    console.log(toSend);
     this.chatSubs[convId].forEach(sub => {
-      console.log(sub.username);
+      console.log(`Sending message|${JSON.stringify(toSend)}| to: `, sub.username);
       sub.socket.emit("message", toSend);
     })
   }
 
   async getConversation(conversationId) {
     let conversationSnap = await this.chatRef.child(`convs/${conversationId}`).once("value");
-    return Object.assign({id: conversationId}, conversationSnap.val());
+    let source = conversationSnap.val();
+    return source ? Object.assign({id: conversationId}, source) : undefined;
   }
 
   async getChatDetails(username) {
@@ -114,7 +133,6 @@ class ChatService {
       let messagesSnap = await this.chatRef.child(`messages/${messageId}`).once("value");
       messages = messagesSnap.val() || [];
     }
-    console.log(messages);
     let users = new Set(messages.map(mess => mess.from));
     let pics = {};
     for (const userName of users) {
@@ -148,7 +166,7 @@ class ChatService {
       let chatSub = this.socketSessionService.getSessionByUser(user);
       if (chatSub) {
         let mainUser = conversation.users.find(otherUser => otherUser !== user);
-        let toSend = {type: "new-chat", data: Object.assign({mainUser},conversation)};
+        let toSend = {type: "new-chat", data: Object.assign({mainUser}, conversation)};
         chatSub.emit("message", toSend);
       }
     }

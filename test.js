@@ -91,15 +91,6 @@ function getPicUrl() {
 }
 
 
-let sad = {
-  asd: "adsad",
-  gfdvg: "sdafsdf",
-  lkxjvgkjdf: "bccxvg",
-  lksjdfkl: "klshdf"
-};
-
-sad.map((item)=>{
-  console.log(item);
-  return item;
+db.ref("chat/details/joshua/convIds").orderByValue().equalTo("f852f7c8-1769-4a7e-aed2-34bbd3faa39c").once("value").then((val, res)=>{
+  console.log(getFirstKeyFromSnapshot(val));
 });
-

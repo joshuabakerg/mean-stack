@@ -47,7 +47,7 @@ class UserService {
   }
 
   async getUserBySessionId(sessionId) {
-    console.log(`Getting user with session id ${sessionId}`);
+    // console.log(`Getting user with session id ${sessionId}`);
     if (!sessionId) return;
     let auth = this.users.find((item) => item.login.sessionid === sessionId);
     if (!auth) {

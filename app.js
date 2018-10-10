@@ -8,7 +8,7 @@ var services = require('./bin/routes/services');
 var views = require('./bin/routes/views');
 
 /*mongoose.Promise = require('bluebird');
-mongoose.connect("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:27017/Devops", { useNewUrlParser: true , promiseLibrary: require('bluebird') })
+mongoose.getConnection("mongodb://test:test@dhtnbdevop01.discovery.holdings.co.za:27017/Devops", { useNewUrlParser: true , promiseLibrary: require('bluebird') })
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));*/
 

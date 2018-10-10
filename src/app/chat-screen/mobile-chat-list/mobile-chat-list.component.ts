@@ -3,16 +3,20 @@ import {HttpClient} from '@angular/common/http';
 import {WebsocketService} from '../../services/websocket.service';
 
 @Component({
-  selector: 'app-chat-list',
-  templateUrl: './chat-list.component.html',
-  styleUrls: ['./chat-list.component.css']
+  selector: 'app-mobile-chat-list',
+  templateUrl: './mobile-chat-list.component.html',
+  styleUrls: ['./mobile-chat-list.component.css']
 })
-export class ChatListComponent implements OnInit, OnDestroy {
+export class MobileChatListComponent implements OnInit, OnDestroy {
+
+  showChats = false;
+
   chatItems = [];
 
   private websocketServiceConnection;
 
   @Output() selectedChat = new EventEmitter<any>();
+  @Output() requestedNewChat = new EventEmitter<any>();
 
   constructor(private httpClient: HttpClient,
               private websocketService: WebsocketService) {
@@ -48,8 +52,18 @@ export class ChatListComponent implements OnInit, OnDestroy {
     };
   }
 
+  onNewChatClick() {
+    console.log('btn clicked');
+    this.requestedNewChat.emit({});
+  }
+
   onChatClick(chat) {
+    this.onShowChatsClick();
     this.selectedChat.emit(chat);
+  }
+
+  onShowChatsClick() {
+    this.showChats = !this.showChats;
   }
 
 }

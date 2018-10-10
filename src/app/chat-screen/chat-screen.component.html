@@ -1,13 +1,16 @@
 <div class="row">
-  <div class="col m2 s4">
+  <div class="col m2 hide-on-small-only">
     <ul>
       <li class="center-align">
-        <a (click)="onAddChatClick()" class="waves-effect waves-light btn modal-trigger" href="#modal1"><i class="material-icons">add_circle_outline</i>Add chat</a>
+        <a (click)="onAddChatClick()" class="waves-effect waves-light btn modal-trigger" ><i class="material-icons">add_circle_outline</i>Add chat</a>
       </li>
     </ul>
     <app-chat-list (selectedChat)="onChatChanged($event)"></app-chat-list>
   </div>
-  <div class="col m10 s8">
+  <div class="col m10 s12">
+    <div class="hide-on-med-and-up">
+      <app-mobile-chat-list (selectedChat)="onChatChanged($event)" (requestedNewChat)="onAddChatClick()"></app-mobile-chat-list>
+    </div>
     <div *ngIf="selectedChat" class="card">
       <div class="card-content">
         <img class="circle right" [src]="getChatDetails(selectedChat).image" width="80" height="80"/>

@@ -4,4 +4,8 @@ let registerSession = (io, socket, event) => {
     socketSessionService.registerUser(event.user.login.username, socket);
 };
 
-module.exports = {registerSession};
+let unregisterSession = (io, socket, event) => {
+  socketSessionService.unregisterUser(event.user.login.username);
+};
+
+module.exports = {registerSession, unregisterSession};

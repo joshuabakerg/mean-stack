@@ -6,11 +6,17 @@ class SocketSessionService {
     this.sessions = {};
   }
 
-  registerUser(username, socket){
+  registerUser(username, socket) {
+    console.log("registering user", username);
     this.sessions[username] = socket;
   }
 
-  getSessionByUser(username){
+  unregisterUser(username) {
+    console.log("unregistering user", username);
+    delete this.sessions[username];
+  }
+
+  getSessionByUser(username) {
     return this.sessions[username];
   }
 

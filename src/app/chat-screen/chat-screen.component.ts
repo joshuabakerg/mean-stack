@@ -36,10 +36,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       this.scrollToBottomOfMessages();
     });
 
-    this.messageEventSubject = this.websocketService.connect();
-    this.messageEventSubject.next({
-      type: 'register-session'
-    });
+    this.messageEventSubject = this.websocketService.getConnection();
     this.websocketSubscription = this.messageEventSubject.subscribe(value => {
       if (value.type === 'new-message') {
         this.messages.push(value.data);
@@ -61,10 +58,12 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
       });
     }
     this.websocketSubscription.unsubscribe();
-    this.websocketService.disconnect();
   }
 
   onAddChatClick() {
+    this.modals.forEach(modal => {
+      modal.open();
+    });
     this.userService.getAllUserNames().subscribe(res => {
       this.users = res;
     });
