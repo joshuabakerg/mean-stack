@@ -32,6 +32,24 @@ router.get("/messages/:messageId", async function (req, res) {
   }
 });
 
+router.post("/conversation/:convId", async function (req, res) {
+  try {
+    verifyNewMessageRequest(req.body);
+    let convId = req.params.convId;
+    let content = req.body.content;
+    let message = {
+      from: req.user.login.username,
+      time: new Date().getTime(),
+      content,
+    };
+    chatService.saveMessage(convId, message);
+    res.send({success: true});
+  } catch (e) {
+    console.error(e);
+    res.send({success: false, message: e.stack})
+  }
+});
+
 router.post("/conversation", async function (req, res, next) {
   try{
     console.log("got request with ", JSON.stringify(req.body, undefined, 2));
@@ -50,5 +68,13 @@ router.post("/conversation", async function (req, res, next) {
     res.send({success: false, message: e.stack})
   }
 });
+
+function verifyNewMessageRequest(body){
+
+  let content = body.content;
+  if(typeof content !== 'string' && !(content instanceof String)){
+    throw Error('Incorrect request, requires one string field alled content, e.g {"content": "hello"}')
+  }
+}
 
 module.exports = router;
