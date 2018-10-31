@@ -29,7 +29,7 @@ class UserService {
   async getAllUsers() {
     let users = getChildren(await this.userRef.once("value"));
     return users.map(user => {
-      user.login = {username: user.login.username};
+      // user.login = {username: user.login.username};
       return user;
     });
   }
