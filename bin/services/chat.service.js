@@ -124,7 +124,13 @@ class ChatService {
     return result;
   }
 
-  async getMessages(messageId, limit = -1) {
+  async getMessages(messageId, user,  limit = -1) {
+    let conversation = getChildren(await this.chatRef.child("convs").orderByChild("messages")
+      .equalTo(messageId)
+      .once("value"))[0];
+    if(!conversation.users.includes(user)){
+      throw new Error(`User ${user} is not part of the chat`)
+    }
     let messages;
     if (limit > 0) {
       let messagesSnap = await this.chatRef.child(`messages/${messageId}`).orderByKey().limitToLast(limit).once("value");
@@ -186,6 +192,9 @@ class ChatService {
     //todo only allow users to join chat if they have the conversation
     let sub = {username, socket: clientSocket};
     if (!this.chatSubs[convId]) this.chatSubs[convId] = [];
+    await this.exitChat(convId, username);
+    console.log(`adding user${username} ${clientSocket} ${convId}`);
+    if(this.chatSubs[convId].cont)
     this.chatSubs[convId].push(sub);
   }
 

@@ -24,7 +24,7 @@ router.get("/", async function (req, res) {
 router.get("/messages/:messageId", async function (req, res) {
   try {
     let messageId = req.params.messageId;
-    let messages = await chatService.getMessages(messageId);
+    let messages = await chatService.getMessages(messageId, req.user.login.username);
     res.send({success: true, messages});
   } catch (e) {
     console.error(e);

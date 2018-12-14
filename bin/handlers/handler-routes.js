@@ -20,12 +20,14 @@ class Hander {
     event.user = user;
     if(user){
       this.routes.forEach(value => {
+
         if(value.type === event.type){
+          console.log(event)
           value.call(this.io, socket, event);
         }
       })
     }else{
-      console.log(`Could not authenticate user with event ${event}`)
+      console.log(`Could not authenticate user with event ${JSON.stringify(event)}`)
     }
   };
 
