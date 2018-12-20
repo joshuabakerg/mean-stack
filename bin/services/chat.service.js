@@ -190,11 +190,10 @@ class ChatService {
 
   async joinChat(convId, username, clientSocket) {
     //todo only allow users to join chat if they have the conversation
+    await this.exitChat(convId, username);
     let sub = {username, socket: clientSocket};
     if (!this.chatSubs[convId]) this.chatSubs[convId] = [];
-    await this.exitChat(convId, username);
     console.log(`adding user${username} ${clientSocket} ${convId}`);
-    if(this.chatSubs[convId].cont)
     this.chatSubs[convId].push(sub);
   }
 
