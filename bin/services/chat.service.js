@@ -11,8 +11,6 @@ class ChatService {
     this.socketSessionService = socketSessionService;
     this.messages = [];
 
-    this.chatSubs = {};
-
     let db = admin.database();
     this.chatRef = db.ref("/chat");
     this.chatRef.child("details").on("value", value => {
@@ -45,7 +43,8 @@ class ChatService {
         }
       } else {
         //Remove without waiting
-        this.removeConvIdFromConversationDetail(user.login.username, convRes.id).then((res)=>{});
+        this.removeConvIdFromConversationDetail(user.login.username, convRes.id).then((res) => {
+        });
       }
     }
     let returnConversations = conversationResults
@@ -86,10 +85,14 @@ class ChatService {
     this.chatRef.child(`messages/${messageId}`).set(messages);
     let user = await this.userService.getUserByUsername(message.from);
     message.pic = user.picture.thumbnail;
+    message.convId = convId;
     let toSend = {type: "new-message", data: message};
-    this.chatSubs[convId].forEach(sub => {
-      console.log(`Sending message|${JSON.stringify(toSend)}| to: `, sub.username);
-      sub.socket.emit("message", toSend);
+    conversation.users.forEach(user => {
+      let session = this.socketSessionService.getSessionByUser(user);
+      if(session){
+        session.emit("message", toSend);
+        console.log(toSend);
+      }
     })
   }
 
@@ -124,11 +127,11 @@ class ChatService {
     return result;
   }
 
-  async getMessages(messageId, user,  limit = -1) {
+  async getMessages(messageId, user, limit = -1) {
     let conversation = getChildren(await this.chatRef.child("convs").orderByChild("messages")
       .equalTo(messageId)
       .once("value"))[0];
-    if(!conversation.users.includes(user)){
+    if (!conversation.users.includes(user)) {
       throw new Error(`User ${user} is not part of the chat`)
     }
     let messages;
@@ -186,22 +189,6 @@ class ChatService {
       status: "Hi i'm new to chat"
     };
     return this.chatRef.child(`details/${username}`).set(details).then(() => details);
-  }
-
-  async joinChat(convId, username, clientSocket) {
-    //todo only allow users to join chat if they have the conversation
-    await this.exitChat(convId, username);
-    let sub = {username, socket: clientSocket};
-    if (!this.chatSubs[convId]) this.chatSubs[convId] = [];
-    console.log(`adding user${username} ${clientSocket} ${convId}`);
-    this.chatSubs[convId].push(sub);
-  }
-
-  async exitChat(convId, username) {
-    console.log(`exiting chat for ${username} on ${convId}`);
-    let subs = this.chatSubs[convId] || [];
-    subs.removeIf(sub => sub.username === username);
-    console.log(subs);
   }
 
 }

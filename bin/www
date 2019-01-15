@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -11,6 +10,7 @@ var debug = require('debug')('mean-app:server');
 
 var http = require('http');
 var sio = require('socket.io');
+var cookie = require('cookie');
 /**
  * Get port from environment and store in Express.
  */
@@ -94,13 +94,22 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-io.on('connection', function(socket){
-  console.log('user connected');
+io.on('connection', async function (socket) {
+  let cookies = socket.client.request.headers.cookie;
+  let parsedCookies = cookie.parse(cookies, {});
+  let sessionId = parsedCookies.sessionid;
+  if (sessionId) {
+    let user = await context.userService.getUserBySessionId(sessionId);
+    if (user) {
+      console.log(`${user.name.first} connected`);
+      context.socketSessionService.registerUser(user.login.username, socket);
+    }
+  }
   socket.on('message', async function (data) {
     let event = JSON.parse(data);
     eventHandler.onMessage(socket, event);
   });
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function () {
     eventHandler.onDisconnect();
   });
 });

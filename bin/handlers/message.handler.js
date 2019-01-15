@@ -2,7 +2,7 @@ let context = require("../context");
 let chatService = context.chatService;
 
 let joinChat = (io, socket, event) => {
-  console.log(`Joining chat ${JSON.stringify(event)}`)
+  console.log(`Joining chat ${JSON.stringify(event)}`);
   chatService.joinChat(event.convId, event.user.login.username, socket);
 };
 

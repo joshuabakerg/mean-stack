@@ -33,15 +33,9 @@ export class WebsocketService implements OnDestroy {
       }
     };
     this.existingConnection = Subject.create(observer, observable);
-    this.existingConnection.next({
-      type: 'register-session'
-    });
   }
 
   ngOnDestroy(): void {
-    this.existingConnection.next({
-      type: 'unregister-session'
-    });
     this.socket.disconnect();
   }
 

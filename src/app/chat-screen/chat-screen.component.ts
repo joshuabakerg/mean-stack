@@ -38,7 +38,7 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
 
     this.messageEventSubject = this.websocketService.getConnection();
     this.websocketSubscription = this.messageEventSubject.subscribe(value => {
-      if (value.type === 'new-message') {
+      if (value.type === 'new-message' && value.data.convId === this.selectedChat.id) {
         this.messages.push(value.data);
         this.messages = this.getParsedMessages(this.messages);
       }
@@ -138,18 +138,6 @@ export class ChatScreenComponent implements OnInit, OnDestroy {
   }
 
   onChatChanged(chat) {
-    if (this.selectedChat) {
-      this.messageEventSubject.next({
-        type: 'exit-chat',
-        convId: this.selectedChat.id
-      });
-    }
-    if (chat) {
-      this.messageEventSubject.next({
-        type: 'join-chat',
-        convId: chat.id
-      });
-    }
     this.selectedChat = chat;
     this.messages = [];
     this.chatService.getMessages(chat.messages).subscribe(value => {
