@@ -96,7 +96,7 @@ function onListening() {
 
 io.on('connection', async function (socket) {
   let cookies = socket.client.request.headers.cookie;
-  let parsedCookies = cookie.parse(cookies, {});
+  let parsedCookies = cookie.parse(cookies || "", {});
   let sessionId = parsedCookies.sessionid;
   if (sessionId) {
     let user = await context.userService.getUserBySessionId(sessionId);
